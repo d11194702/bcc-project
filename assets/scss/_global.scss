@@ -1,0 +1,35 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Onest:wght@100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+$font-onest: "Onest", sans-serif;
+$font-montserrat: "Montserrat", sans-serif;
+$font-roboto: "Roboto", sans-serif;
+$font-inter: "Inter", sans-serif;
+// Fonts end
+
+// Colors
+$color-red: #E30303;
+$color-main-blue: #112d55;
+$color-text-grey: #878787;
+$color-text-lightgrey: #e3e1e1;
+$color-text-black: #1d1d1d;
+$color-bg-grey: #f5f5f5;
+$color-bg-white-1000: #fff;
+$color-bg-white-500: rgba(255, 255, 255, 0.5);
+$color-bg-white-300: rgba(255, 255, 255, 0.3);
+$color-bg-white-200: rgba(255, 255, 255, 0.2);
+$color-bg-white-100: rgba(255, 255, 255, 0.1);
+// Colors end
+
+@mixin media($value) {
+    @if ($value < 0) {
+        @media screen and (min-width: calc($value * (-1)) + 'px') {
+            @content;
+        }
+
+    } @else {
+        @media screen and (max-width: $value + 'px') {
+            @content;
+        }
+    }
+}

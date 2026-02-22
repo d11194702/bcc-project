@@ -1,0 +1,135 @@
+// Home
+.home {
+    padding-top: 20px;
+
+    @include media(992) {
+        padding-top: 10px;
+    }
+
+    &-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+
+        @include media(992) {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 15px;
+        }
+    }
+
+    &-title {
+        font-size: 60px;
+        line-height: 42px;
+        color: $color-text-grey;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        @include media(1200) {
+            font-size: 36px;
+            line-height: 100%;
+            gap: 12px;
+        }
+
+        @include media(992) {
+            font-size: 25px;
+            line-height: 18px;
+            gap: 15px;
+            white-space: nowrap;
+        }
+
+        .text-blue {
+            color: $color-main-blue;
+        }
+    }
+
+    &-left {
+        grid-column: span 2;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 64px 60px;
+        background: $color-bg-grey;
+        border-radius: 40px;
+        position: relative;
+        z-index: 1;
+        gap: 60px;
+        overflow: hidden;
+
+        @include media(992) {
+            padding: 30px 20px;
+            border-radius: 30px;
+            gap: 40px;
+        }
+
+        ul {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 60px;
+
+            @include media(1200) {
+                flex-direction: column;
+            }
+
+            li {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 160%;
+            }
+        }
+
+        .bg-text {
+            font-size: 400px;
+            line-height: 283px;
+            color: $color-bg-white-1000;
+            opacity: 0.8;
+            position: absolute;
+            z-index: -1;
+            right: -115px;
+            bottom: -89px;
+
+            @include media(992) {
+                font-weight: 500;
+                font-size: 200px;
+                line-height: 141px;
+                bottom: -31px;
+            }
+        }
+    }
+
+    &-right {
+        border-radius: 40px;
+        position: relative;
+        overflow: hidden;
+        min-height: 650px;
+
+        @include media(992) {
+            height: 200px;
+            min-height: inherit;
+            border-radius: 30px;
+        }
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+
+            @include media(992) {
+                display: none;
+            }
+
+            &.sm {
+                display: none;
+
+                @include media(992) {
+                    display: block;
+                }
+            }
+        }
+    }
+}
+// Home end

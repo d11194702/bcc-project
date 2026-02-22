@@ -1,0 +1,360 @@
+.company {
+    padding: 100px 0;
+
+    @include media(992) {
+        padding: 80px 0;
+    }
+
+    &-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        @include media(992) {
+            gap: 10px;
+        }
+    }
+
+    &-head {
+        border-radius: 40px;
+        background: $color-bg-grey;
+        padding: 70px;
+        min-height: 612px;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+
+        @include media(992) {
+            padding: 30px 20px 212px;
+            border-radius: 30px;
+        }
+
+        ul {
+            max-width: 442px;
+            margin: 59px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 30px;
+
+            @include media(992) {
+                margin: 40px 0 60px;
+                max-width: 100%;
+            }
+
+            li {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 160%;
+            }
+        }
+
+        .bg-text {
+            font-weight: 700;
+            font-size: 600px;
+            line-height: 425px;
+            color: $color-main-blue;
+            position: absolute;
+            left: 234px;
+            bottom: 94px;
+            z-index: -1;
+            opacity: 0.05;
+
+            @include media(992) {
+                left: 10px;
+                font-size: 300px;
+                line-height: 212px;
+                bottom: 86px;
+            }
+        }
+
+        .bg-img {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+
+            @include media(1300) {
+                width: 800px;
+            }
+
+            @include media(1200) {
+                width: 700px;
+            }
+
+            @include media(1100) {
+                width: 600px;
+            }
+
+            @include media(992) {
+                display: none;
+                width: 330px;
+            }
+
+            &.sm {
+                display: none;
+
+                @include media(992) {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    &-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+
+        @include media(992) {
+            gap: 10px;
+        }
+    }
+
+    &-card {
+        border-radius: 40px;
+        min-height: 450px;
+        background: $color-bg-grey;
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+        padding: 241px 40px 60px;
+
+        @include media(992) {
+            min-height: 160px !important;
+            padding: 80px 25px 25px;
+            border-radius: 20px;
+        }
+
+        h3 {
+            font-weight: 600;
+            font-size: 200px;
+            line-height: 141px;
+            text-align: center;
+            color: $color-main-blue;
+            margin-bottom: 40px;
+            opacity: 0.1;
+            position: absolute;
+            left: 50%;
+            top: 60px;
+            transform: translateX(-50%);
+            white-space: nowrap;
+
+            @include media(992) {
+                font-weight: 500;
+                font-size: 50px;
+                line-height: 35px;
+                top: 30px;
+            }
+        }
+
+        p {
+            font-weight: 600;
+            font-size: 20px;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+
+            @include media(992) {
+                font-size: 10px;
+            }
+        }
+
+        img {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+
+            @include media(992) {
+                width: 119px;
+            }
+        }
+
+        &:nth-child(2) {
+            img {
+                width: 485px;
+                min-width: 485px;
+                right: 50%;
+                transform: translateX(50%);
+                box-shadow: 9px 4px 22px 0 rgba(0, 0, 0, 0.1), 36px 17px 40px 0 rgba(0, 0, 0, 0.09), 81px 37px 54px 0 rgba(0, 0, 0, 0.05), 145px 67px 64px 0 rgba(0, 0, 0, 0.01), 226px 104px 70px 0 rgba(0, 0, 0, 0);
+
+                @include media(992) {
+                    width: 119px;
+                    min-width: 119px;
+                }
+            }
+        }
+
+        &:nth-child(n+3) {
+            min-height: inherit;
+        }
+    }
+}
+
+.company-home {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: 100px;
+
+        @include media(992) {
+            gap: 60px;
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+
+        .text {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+
+            h3 {
+                font-weight: 500;
+                font-size: 30px;
+                line-height: 21px;
+
+                @include media(992) {
+                    font-size: 20px;
+                    line-height: 14px;
+                }
+            }
+
+            ul {
+                display: flex;
+                align-items: flex-start;
+                gap: 20px;
+
+                @include media(992) {
+                    flex-direction: column;
+                    gap: 30px;
+                }
+            }
+
+            li {
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 160%;
+                margin: -6px 0;
+
+                &:nth-child(2) {
+                    width: 460px;
+                    flex-shrink: 0;
+
+                    @include media(992) {
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    &__head {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+
+        @include media(992) {
+            gap: 40px;
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 160%;
+            margin: -6px 0;
+        }
+    }
+
+    &__list {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 100px 50px;
+        flex-wrap: wrap;
+
+        @include media(992) {
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        li {
+            width: 337px;
+
+            @include media(1300) {
+                width: 300px;
+            }
+
+            @include media(992) {
+                width: 100%;
+            }
+
+            &:nth-child(2), &:nth-child(5) {
+                width: 413px;
+
+                @include media(1300) {
+                    width: 350px;
+                }
+
+                @include media(992) {
+                    width: 100%;
+                }
+            }
+
+            &.empty {
+                @include media(1130) {
+                    display: none;
+                }
+            }
+        }
+
+        h3 {
+            font-weight: 500;
+            font-size: 160px;
+            line-height: 113px;
+            color: $color-main-blue;
+            margin-bottom: 40px;
+
+            @include media(1300) {
+                font-size: 120px;
+                line-height: 85px;
+            }
+
+            span {
+                font-weight: 400;
+                font-size: 180px;
+                line-height: 113px;
+                color: rgba(17, 45, 85, 0.1);
+                display: inline;
+
+                @include media(1300) {
+                    font-size: 140px;
+                    line-height: 85px;
+                }
+            }
+        }
+
+        p {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 160%;
+            margin: -6px 0;
+        }
+    }
+
+    &__card {
+        width: 100%;
+        height: 630px;
+        flex-shrink: 0;
+        border-radius: 40px;
+
+        @include media(992) {
+            height: 330px;
+            border-radius: 30px;
+        }
+    }
+}

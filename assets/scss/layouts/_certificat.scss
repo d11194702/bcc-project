@@ -1,0 +1,120 @@
+.certificat {
+    &-container {
+        display: flex;
+        flex-direction: column;
+        gap: 80px;
+
+        @include media(850) {
+            gap: 60px;
+        }
+    }
+
+    &-head {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 60px;
+
+        @include media(850) {
+            gap: 40px;
+        }
+
+        .description {
+            max-width: 780px;
+            width: 100%;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 160%;
+            margin: -6px 0;
+        }
+    }
+
+    &-content {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    h3 {
+        font-weight: 500;
+        font-size: 30px;
+        margin: -8px 0;
+
+        @include media(850) {
+            font-size: 20px;
+            margin: -6px 0;
+        }
+    }
+
+    &-list {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+
+        @include media(1280) {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        @include media(850) {
+            grid-template-columns: repeat(1, 1fr);
+            gap: 10px;
+        }
+    }
+
+    &-card {
+        background: $color-bg-grey;
+        padding: 30px;
+        display: flex;
+        align-items: stretch;
+        gap: 57px;
+        border-radius: 20px;
+
+        @include media(850) {
+            padding: 30px 20px;
+        }
+
+        &__text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            @include media(850) {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+                gap: 50px;
+            }
+
+            p {
+                font-weight: 500;
+                font-size: 14px;
+                text-transform: uppercase;
+                margin: -4px 0;
+            }
+
+            &-icon {
+                border-radius: 100px;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: $color-main-blue;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+        }
+
+        .main-img {
+            width: 122px;
+            height: 172px;
+            flex-shrink: 0;
+
+            @include media(850) {
+                display: none;
+            }
+        }
+    }
+}

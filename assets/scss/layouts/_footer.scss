@@ -1,0 +1,236 @@
+.footer {
+    background: $color-main-blue;
+    padding: 60px 0;
+
+    &-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        font-weight: 600;
+        font-size: 12px;
+        line-height: 8px;
+        text-align: center;
+        color: $color-bg-white-1000;
+
+        img {
+            @include media(992) {
+                width: 108px;
+            }
+        }
+    }
+
+    &-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 154px;
+        gap: 30px;
+
+        @include media(992) {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 60px;
+            margin-bottom: 62px;
+        }
+
+        &__left {
+            width: 319px;
+            flex-shrink: 0;
+        }
+
+        &__right {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            max-width: 669px;
+            width: 100%;
+
+            @include media(992) {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            &-item {
+                display: flex;
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 20px;
+                
+                &:nth-child(2) {
+                    @include media(-992) {
+                        align-items: flex-end;
+                        text-align: right;
+                    }
+                }
+            }
+
+            label {
+                font-weight: 600;
+                font-size: 14px;
+                text-transform: uppercase;
+                color: $color-bg-white-500;
+                margin: -4px 0;
+
+                @include media(992) {
+                    font-size: 12px;
+                }
+            }
+
+            p, a {
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 160%;
+                text-transform: uppercase;
+                color: $color-bg-white-1000;
+                margin: -7px 0;
+
+                @include media(992) {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+
+    &-content {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 30px;
+        position: relative;
+
+        &__left {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 40px;
+            width: 319px;
+            flex-shrink: 0;
+
+            @include media(992) {
+                position: absolute;
+                bottom: 127px;
+                left: 0;
+                width: 100%;
+                gap: 30px;
+            }
+
+            .networks {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                span, a {
+                    font-weight: 400;
+                    font-size: 14px;
+                    line-height: 10px;
+                    text-decoration: underline;
+                    text-decoration-skip-ink: none;
+                    text-align: center;
+                    color: $color-bg-white-1000;
+                }
+            }
+
+            .ratings {
+                display: flex;
+                align-items: stretch;
+                gap: 10px;
+
+                li {
+                    border-radius: 10px;
+                    padding: 15px 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 20px;
+                    background: $color-bg-white-100;
+                }
+
+                span {
+                    font-weight: 400;
+                    font-size: 12px;
+                    color: $color-bg-white-500;
+                }
+
+                .line {
+                    width: 1px;
+                    height: 40px;
+                    flex-shrink: 0;
+                    background: $color-bg-white-500;
+                }
+
+                b {
+                    font-weight: 500;
+                    font-size: 20px;
+                    color: $color-bg-white-500;
+                }
+            }
+        }
+
+        &__right {
+            max-width: 669px;
+            width: 100%;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+
+            @include media(992) {
+                gap: 230px;
+                flex-direction: column;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            ul {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+
+                a {
+                    font-weight: 600;
+                    font-size: 14px;
+                    line-height: 10px;
+                    text-transform: uppercase;
+                    color: $color-bg-white-500;
+                }
+            }
+
+            &-text {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: space-between;
+
+                @include media(992) {
+                    align-items: flex-start;
+                    gap: 30px;
+                }
+
+                h3 {
+                    font-weight: 600;
+                    font-size: 16px;
+                    line-height: 11px;
+                    text-transform: uppercase;
+                    text-align: right;
+                    color: $color-bg-white-1000;
+                }
+
+                .link {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+                    gap: 10px;
+                }
+
+                a {
+                    font-weight: 300;
+                    font-size: 12px;
+                    line-height: 8px;
+                    text-align: right;
+                    color: $color-text-lightgrey;
+                }
+            }
+        }
+    }
+}

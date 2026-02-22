@@ -1,0 +1,34 @@
+/*
+Theme Name: BCC Project
+Text Domain: bcc-project
+Version: 1.0.0
+*/
+
+body {
+	margin: 0;
+	font-family: Arial, sans-serif;
+	line-height: 1.5;
+}
+
+.site-main {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 24px 16px;
+}
+
+.entry {
+	margin-bottom: 28px;
+}
+
+.entry-title {
+	margin: 0 0 12px;
+}
+
+.entry-title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.entry-content p {
+	margin: 0 0 12px;
+}
