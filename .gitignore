@@ -3,3 +3,6 @@ deploy-test/
 Thumbs.db
 deploy-theme.bat
 run-deploy.bat
+.github
+bcc-project
+.gitignore
