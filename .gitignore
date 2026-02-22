@@ -1,3 +1,5 @@
 deploy-test/
 .DS_Store
-Thumbs.db
+Thumbs.dbdeploy-theme.bat
+run-deploy.bat
+deploy-theme.bat
