@@ -541,18 +541,25 @@ main {
   position: absolute;
   left: 0;
   bottom: -25px;
-  transform: translateY(100%);
+  transform: translateY(calc(100% + 8px));
   box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.05), 2px 0 15px 0 rgba(0, 0, 0, 0.05);
   background: #fff;
   border-radius: 20px;
   padding: 20px 15px 30px 20px;
   width: 662px;
-  display: none;
+  display: flex;
   align-items: flex-start;
   gap: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 }
 .header-catalog.active {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(100%);
 }
 .header-catalog__left {
   width: 282px;
@@ -661,11 +668,19 @@ main {
   z-index: 2;
   padding: 40px 15px;
   overflow-y: scroll;
-  display: none;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 }
 @media screen and (max-width: 1210px) {
   .menu.active {
-    display: block;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
   }
 }
 .menu::-webkit-scrollbar {
@@ -675,9 +690,17 @@ main {
   display: flex;
   flex-direction: column;
   width: 100%;
+  opacity: 1;
+  max-height: 1000px;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: opacity 0.25s ease, max-height 0.25s ease, transform 0.25s ease;
 }
 .menu-navs.hidden {
-  display: none;
+  opacity: 0;
+  max-height: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
 }
 .menu-navs__link {
   width: 100%;
@@ -738,13 +761,27 @@ main {
   color: #112d55;
 }
 .menu-catalog {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, max-height 0.25s ease, transform 0.25s ease;
   display: none;
 }
 .menu-catalog.active {
   display: block;
+  opacity: 1;
+  max-height: 1000px;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 .menu-catalog.hidden {
   display: block;
+  opacity: 1;
+  max-height: 70px;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 .menu-catalog.hidden li:not(.active) {
   display: none;
@@ -817,10 +854,20 @@ main {
   color: #878787;
 }
 .menu-catalog__content {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, max-height 0.25s ease, transform 0.25s ease;
   display: none;
 }
 .menu-catalog__content.active {
   display: block;
+  opacity: 1;
+  max-height: 1000px;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 .menu-catalog__content-item:not(.active) {
   display: none;
@@ -875,7 +922,11 @@ main {
   position: absolute;
   left: 125px;
   width: calc(100% - 286px);
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
   z-index: 1;
 }
 @media screen and (max-width: 1210px) {
@@ -895,7 +946,10 @@ main {
   }
 }
 .search.active {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 .search-btn {
   width: 50px;
@@ -989,13 +1043,16 @@ main {
   z-index: 5;
   left: 0;
   bottom: -24px;
-  transform: translateY(100%);
+  transform: translateY(calc(100% + 8px));
   box-shadow: 0 2px 15px 0 rgba(0, 0, 0, 0.05), 2px 0 15px 0 rgba(0, 0, 0, 0.05);
   background: #fff;
   border-radius: 20px;
   padding: 0 15px 27px 20px;
   width: 100%;
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
 }
 @media screen and (max-width: 1210px) {
   .search-result__wrap {
@@ -1005,7 +1062,10 @@ main {
   }
 }
 .search-result__wrap.active {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(100%);
 }
 .search-result__wrap .more-link {
   padding: 40px 0 0 50px;
@@ -2297,10 +2357,22 @@ main {
   width: 100%;
   height: 100%;
   z-index: 5;
-  display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 .modal.active {
-  display: block;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.modal.active .modal-bg {
+  opacity: 1;
+}
+.modal.active .modal-content {
+  opacity: 1;
+  transform: translateX(0);
 }
 .modal-bg {
   position: absolute;
@@ -2310,6 +2382,8 @@ main {
   height: 100%;
   z-index: 1;
   background: rgba(17, 45, 85, 0.8);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 .modal-dialog {
   max-height: 100svh;
@@ -2360,6 +2434,9 @@ main {
   justify-content: space-between;
   align-items: flex-start;
   gap: 60px;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 @media screen and (max-width: 992px) {
   .modal-content {
@@ -3781,12 +3858,52 @@ main {
   flex-direction: column;
   gap: 20px;
   width: 95px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.product-content__left li.is-selected span {
+  font-weight: 600;
+}
+.product-content__left li::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  top: -10px;
+  transform: translate(-50%, -100%);
+  background: #fff;
+  color: #1d1d1d;
+  border: 1px solid #d9d9d9;
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease-in-out;
+  z-index: 2;
+}
+.product-content__left li:hover::after {
+  opacity: 1;
 }
 .product-content__left li img {
   width: 100%;
   height: auto;
   aspect-ratio: 1/1;
   border-radius: 50%;
+  outline: 2px solid transparent;
+  outline-offset: 4px;
+  transition: outline-color 0.15s ease-in-out, outline-width 0.15s ease-in-out;
+}
+.product-content__left li:hover img,
+.product-content__left li:focus-visible img {
+  outline-color: #112d55;
+}
+.product-content__left li.is-selected img {
+  outline-color: #112d55;
+  outline-width: 3px;
 }
 .product-content__left li span {
   font-weight: 500;

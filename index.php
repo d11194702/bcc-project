@@ -2,7 +2,6 @@
 get_header();
 ?>
 
-<main class="site-main">
 	<?php if (have_posts()) : ?>
 		<?php while (have_posts()) : the_post(); ?>
 			<article id="post-<?php the_ID(); ?>" <?php post_class('entry'); ?>>
@@ -17,7 +16,7 @@ get_header();
 			<h2 class="entry-title"><?php esc_html_e('Постов пока нет.', 'bcc-project'); ?></h2>
 		</article>
 	<?php endif; ?>
-</main>
+
 
 <?php
 get_footer();
