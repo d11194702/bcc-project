@@ -431,6 +431,17 @@ function crb_attach_theme_options()
                     ->set_width(50),
             ))
             ->set_header_template('<%- label %>'),
+
+        Field::make('complex', 'product_thickness_prices', 'Толщина и цена')
+            ->set_help_text('Добавьте варианты толщины и цену для каждого варианта. При выборе толщины на странице товара цена будет меняться автоматически.')
+            ->set_layout('tabbed-horizontal')
+            ->add_fields(array(
+                Field::make('text', 'thickness', 'Толщина (например: 0.45 мм)')
+                    ->set_width(50),
+                Field::make('text', 'price', 'Цена (руб/м2)')
+                    ->set_width(50),
+            ))
+            ->set_header_template('<%- thickness %>'),
     ));
 
     $product->add_tab('Цвета', array(

@@ -408,6 +408,46 @@ if (productColorItems.length) {
     });
 }
 
+const productThicknessSelect = document.querySelector('.product-thickness-select');
+const productPriceValue = document.querySelector('.product-block__text-bottom .product-price-value');
+
+if (productThicknessSelect && productPriceValue) {
+    const thicknessButtons = productThicknessSelect.querySelectorAll('.main-select__list button');
+    const thicknessLabel = productThicknessSelect.querySelector('.main-select__btn span');
+    const thicknessInput = productThicknessSelect.querySelector('.main-select__btn input');
+
+    const applyThickness = (button) => {
+        if (!button) {
+            return;
+        }
+
+        const thickness = (button.getAttribute('data-thickness') || button.textContent || '').trim();
+        const price = (button.getAttribute('data-price') || '').trim();
+
+        thicknessButtons.forEach((item) => item.classList.remove('selected'));
+        button.classList.add('selected');
+
+        if (thicknessLabel) {
+            thicknessLabel.textContent = thickness;
+        }
+
+        if (thicknessInput) {
+            thicknessInput.value = thickness;
+        }
+
+        if (price) {
+            productPriceValue.textContent = price;
+        }
+    };
+
+    thicknessButtons.forEach((button) => {
+        button.addEventListener('click', () => applyThickness(button));
+    });
+
+    const selectedButton = productThicknessSelect.querySelector('.main-select__list button.selected');
+    applyThickness(selectedButton || thicknessButtons[0]);
+}
+
 let swpChild;
 let swpParent;
 
