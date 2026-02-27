@@ -45,24 +45,32 @@ get_header();
                         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/arrow-down-light.svg" alt="">
                     </button>
                     <div class="catalog-tab__head-list">
-                        <button data-url="<?php echo esc_url(get_post_type_archive_link('product')); ?>">Все товары</button>
                         <?php
-                        $current_term_id = get_queried_object_id();
+                        $current_term = get_queried_object();
+                        $current_term_id = ($current_term && !is_wp_error($current_term)) ? (int) $current_term->term_id : 0;
+                        $selected_parent_id = $current_term_id;
+
+                        if ($selected_parent_id > 0) {
+                            $ancestor_ids = get_ancestors($selected_parent_id, 'product_category');
+                            if (!empty($ancestor_ids)) {
+                                $selected_parent_id = (int) end($ancestor_ids);
+                            }
+                        }
+
                         $categories = get_terms([
                             'taxonomy' => 'product_category',
                             'hide_empty' => false,
-                            'parent' => (int) $current_term_id,
+                            'parent' => 0,
                             'orderby' => 'name',
                             'order' => 'ASC',
                         ]);
+
                         if ($categories && !is_wp_error($categories)) :
                             foreach ($categories as $category) :
-                                $term_link = get_term_link($category);
+                                $term_link = trailingslashit(home_url('/products/' . $category->slug));
+                                $is_active = (int) $category->term_id === (int) $selected_parent_id;
                                 ?>
-                                <button
-                                    data-category="<?php echo esc_attr($category->slug); ?>"
-                                    data-url="<?php echo esc_url($term_link); ?>"
-                                >
+                                <button<?php echo $is_active ? ' class="active"' : ''; ?> data-category="<?php echo esc_attr($category->slug); ?>" data-url="<?php echo esc_url($term_link); ?>">
                                     <?php echo esc_html($category->name); ?>
                                 </button>
                             <?php endforeach;
@@ -75,54 +83,27 @@ get_header();
             <div class="catalog-tab__body active">
                 <div class="catalog-list">
                     <?php
-                    $current_term_id = get_queried_object_id();
-                    $child_terms = get_terms([
-                        'taxonomy' => 'product_category',
-                        'hide_empty' => false,
-                        'parent' => (int) $current_term_id,
-                        'orderby' => 'name',
-                        'order' => 'ASC',
-                    ]);
+                    $products_query = null;
+                    if ($selected_parent_id > 0) {
+                        $products_query = new WP_Query([
+                            'post_type' => 'product',
+                            'post_status' => 'publish',
+                            'posts_per_page' => -1,
+                            'orderby' => 'title',
+                            'order' => 'ASC',
+                            'tax_query' => [
+                                [
+                                    'taxonomy' => 'product_category',
+                                    'field' => 'term_id',
+                                    'terms' => [$selected_parent_id],
+                                    'include_children' => true,
+                                ],
+                            ],
+                        ]);
+                    }
 
-                    if (!empty($child_terms) && !is_wp_error($child_terms)) :
-                        foreach ($child_terms as $child_term) :
-                            $term_link = get_term_link($child_term);
-                            if (is_wp_error($term_link)) {
-                                continue;
-                            }
-
-                            $attachment_id = 0;
-                            if (function_exists('carbon_get_term_meta')) {
-                                $attachment_id = (int) carbon_get_term_meta((int) $child_term->term_id, 'product_category_menu_image');
-                            }
-                            if (!$attachment_id) {
-                                $attachment_id = (int) get_term_meta((int) $child_term->term_id, 'thumbnail_id', true);
-                            }
-
-                            $image_url = $attachment_id ? wp_get_attachment_image_url($attachment_id, 'medium') : '';
-                            $description = !empty($child_term->description) ? wp_trim_words(wp_strip_all_tags($child_term->description), 20) : '';
-                            $count = (int) ($child_term->count ?? 0);
-                            ?>
-                            <div class="product-card">
-                                <div class="swiper product-card__swp">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="<?php echo esc_url($image_url ? $image_url : get_template_directory_uri() . '/assets/images/product-card-1.png'); ?>" alt="<?php echo esc_attr($child_term->name); ?>">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="product-card__body">
-                                    <div class="product-card__body-text">
-                                        <h3><?php echo esc_html($child_term->name); ?></h3>
-                                        <p><?php echo esc_html($description); ?></p>
-                                    </div>
-                                    <div class="price"><?php echo esc_html($count); ?> товаров</div>
-                                    <a href="<?php echo esc_url($term_link); ?>">Подробнее</a>
-                                </div>
-                            </div>
-                        <?php endforeach;
-                    elseif (have_posts()) :
-                        while (have_posts()) : the_post();
+                    if ($products_query && $products_query->have_posts()) :
+                        while ($products_query->have_posts()) : $products_query->the_post();
                             $price = function_exists('carbon_get_post_meta') ? carbon_get_post_meta(get_the_ID(), 'product_price') : get_post_meta(get_the_ID(), 'product_price', true);
                             $gallery = function_exists('carbon_get_post_meta') ? carbon_get_post_meta(get_the_ID(), 'product_gallery') : get_post_meta(get_the_ID(), 'product_gallery', true);
                             ?>
@@ -170,21 +151,12 @@ get_header();
                                 </div>
                             </div>
                         <?php endwhile;
+                        wp_reset_postdata();
                     else : ?>
-                        <p>Товары и подкатегории не найдены.</p>
+                        <p>Товары не найдены.</p>
                     <?php endif; ?>
                 </div>
             </div>
-
-            <?php if (empty($child_terms) || is_wp_error($child_terms)) : ?>
-                <?php
-                the_posts_pagination([
-                    'mid_size'  => 2,
-                    'prev_text' => '<img src="' . get_template_directory_uri() . '/assets/images/prev-icon.svg" alt="Предыдущая">',
-                    'next_text' => '<img src="' . get_template_directory_uri() . '/assets/images/next-icon.svg" alt="Следующая">',
-                ]);
-                ?>
-            <?php endif; ?>
         </div>
     </section>
     <!-- Catalog end -->

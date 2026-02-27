@@ -103,56 +103,77 @@ get_header();
             <div class="catalog-tab__body active">
                 <div class="catalog-list">
                     <?php
-                    $subcategories = [];
+                    $products_query = null;
                     if ($selected_parent_id > 0) {
-                        $subcategories = get_terms([
-                            'taxonomy' => 'product_category',
-                            'hide_empty' => false,
-                            'parent' => (int) $selected_parent_id,
-                            'orderby' => 'name',
+                        $products_query = new WP_Query([
+                            'post_type' => 'product',
+                            'post_status' => 'publish',
+                            'posts_per_page' => -1,
+                            'orderby' => 'title',
                             'order' => 'ASC',
+                            'tax_query' => [
+                                [
+                                    'taxonomy' => 'product_category',
+                                    'field' => 'term_id',
+                                    'terms' => [$selected_parent_id],
+                                    'include_children' => true,
+                                ],
+                            ],
                         ]);
                     }
 
-                    if (!empty($subcategories) && !is_wp_error($subcategories)) :
-                        foreach ($subcategories as $subcategory) :
-                            $term_link = get_term_link($subcategory);
-                            if (is_wp_error($term_link)) {
-                                continue;
-                            }
-
-                            $attachment_id = 0;
-                            if (function_exists('carbon_get_term_meta')) {
-                                $attachment_id = (int) carbon_get_term_meta((int) $subcategory->term_id, 'product_category_menu_image');
-                            }
-                            if (!$attachment_id) {
-                                $attachment_id = (int) get_term_meta((int) $subcategory->term_id, 'thumbnail_id', true);
-                            }
-
-                            $image_url = $attachment_id ? wp_get_attachment_image_url($attachment_id, 'medium') : '';
-                            $description = !empty($subcategory->description) ? wp_trim_words(wp_strip_all_tags($subcategory->description), 20) : '';
-                            $count = (int) ($subcategory->count ?? 0);
+                    if ($products_query && $products_query->have_posts()) :
+                        while ($products_query->have_posts()) : $products_query->the_post();
+                            $price = function_exists('carbon_get_post_meta') ? carbon_get_post_meta(get_the_ID(), 'product_price') : get_post_meta(get_the_ID(), 'product_price', true);
+                            $gallery = function_exists('carbon_get_post_meta') ? carbon_get_post_meta(get_the_ID(), 'product_gallery') : get_post_meta(get_the_ID(), 'product_gallery', true);
                             ?>
                             <div class="product-card">
-                                <div class="swiper product-card__swp">
-                                    <div class="swiper-wrapper">
-                                        <div class="swiper-slide">
-                                            <img src="<?php echo esc_url($image_url ? $image_url : get_template_directory_uri() . '/assets/images/product-card-1.png'); ?>" alt="<?php echo esc_attr($subcategory->name); ?>">
+                                <?php if ($gallery && is_array($gallery)) : ?>
+                                    <div class="swiper product-card__swp">
+                                        <div class="swiper-wrapper">
+                                            <?php foreach ($gallery as $image_id) :
+                                                $image = wp_get_attachment_image_url($image_id, 'medium');
+                                                if ($image) : ?>
+                                                    <div class="swiper-slide">
+                                                        <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
+                                                    </div>
+                                                <?php endif;
+                                            endforeach; ?>
+                                        </div>
+                                        <div class="swp-pagination"></div>
+                                    </div>
+                                <?php elseif (has_post_thumbnail()) : ?>
+                                    <div class="swiper product-card__swp">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                                                <?php the_post_thumbnail('medium'); ?>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <?php else : ?>
+                                    <div class="swiper product-card__swp">
+                                        <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/product-card-1.png" alt="<?php the_title(); ?>">
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                                 <div class="product-card__body">
                                     <div class="product-card__body-text">
-                                        <h3><?php echo esc_html($subcategory->name); ?></h3>
-                                        <p><?php echo esc_html($description); ?></p>
+                                        <h3><?php the_title(); ?></h3>
+                                        <p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?></p>
                                     </div>
-                                    <div class="price"><?php echo esc_html($count); ?> товаров</div>
-                                    <a href="<?php echo esc_url($term_link); ?>">Подробнее</a>
+                                    <?php if ($price) : ?>
+                                        <div class="price"><?php echo esc_html($price); ?> руб/м2</div>
+                                    <?php endif; ?>
+                                    <a href="<?php the_permalink(); ?>">Подробнее</a>
                                 </div>
                             </div>
-                        <?php endforeach;
+                        <?php endwhile;
+                        wp_reset_postdata();
                     else : ?>
-                        <p>Подкатегории не найдены.</p>
+                        <p>Товары не найдены.</p>
                     <?php endif; ?>
                 </div>
             </div>

@@ -44,23 +44,21 @@ function bcc_breadcrumbs() {
                     }
                 }
 
-                $ancestor_ids = array_reverse(get_ancestors($current_term->term_id, 'product_category'));
-                foreach ($ancestor_ids as $ancestor_id) {
-                    $ancestor_term = get_term($ancestor_id, 'product_category');
-                    if ($ancestor_term && !is_wp_error($ancestor_term)) {
-                        $ancestor_link = get_term_link($ancestor_term);
-                        if (!is_wp_error($ancestor_link)) {
-                            echo '<li><a href="' . esc_url($ancestor_link) . '">' . esc_html($ancestor_term->name) . '</a></li>';
-                            echo $separator;
-                        }
+                $root_term = bcc_get_root_product_category_term($current_term);
+                if ($root_term) {
+                    $root_term_link = get_term_link($root_term);
+                    if (!is_wp_error($root_term_link)) {
+                        echo '<li><a href="' . esc_url($root_term_link) . '">' . esc_html($root_term->name) . '</a></li>';
+                        echo $separator;
+                    }
+                } else {
+                    $current_term_link = get_term_link($current_term);
+                    if (!is_wp_error($current_term_link)) {
+                        echo '<li><a href="' . esc_url($current_term_link) . '">' . esc_html($current_term->name) . '</a></li>';
+                        echo $separator;
                     }
                 }
 
-                $current_term_link = get_term_link($current_term);
-                if (!is_wp_error($current_term_link)) {
-                    echo '<li><a href="' . esc_url($current_term_link) . '">' . esc_html($current_term->name) . '</a></li>';
-                    echo $separator;
-                }
             }
             
             // Текущий товар
@@ -118,26 +116,13 @@ function bcc_breadcrumbs() {
         echo $separator;
         
         $term = get_queried_object();
-        
-        // Родительские категории
-        if ($term->parent) {
-            $parent_terms = [];
-            $parent_id = $term->parent;
-            
-            while ($parent_id) {
-                $parent = get_term($parent_id, 'product_category');
-                $parent_terms[] = '<li><a href="' . get_term_link($parent) . '">' . $parent->name . '</a></li>';
-                $parent_id = $parent->parent;
-            }
-            
-            $parent_terms = array_reverse($parent_terms);
-            foreach ($parent_terms as $parent_term) {
-                echo $parent_term;
-                echo $separator;
-            }
+
+        $root_term = bcc_get_root_product_category_term($term);
+        if ($root_term) {
+            echo '<li><span>' . esc_html($root_term->name) . '</span></li>';
+        } elseif ($term && !is_wp_error($term)) {
+            echo '<li><span>' . esc_html($term->name) . '</span></li>';
         }
-        
-        echo '<li><span>' . $term->name . '</span></li>';
     } elseif (is_category()) {
         // Для категорий блога
         $category = get_queried_object();
@@ -179,4 +164,21 @@ function bcc_breadcrumbs() {
     
     echo '</ul>';
     echo '</section>';
+}
+
+function bcc_get_root_product_category_term($term) {
+    if (!$term || is_wp_error($term)) {
+        return null;
+    }
+
+    $root = $term;
+    while (!empty($root->parent)) {
+        $parent = get_term((int) $root->parent, 'product_category');
+        if (!$parent || is_wp_error($parent)) {
+            break;
+        }
+        $root = $parent;
+    }
+
+    return $root;
 }

@@ -84,6 +84,36 @@ function bcc_get_product_category_menu_image_url(int $term_id, string $default_u
     return $default_url;
 }
 
+function bcc_get_products_for_parent_category(int $parent_term_id): array {
+    if ($parent_term_id <= 0) {
+        return [];
+    }
+
+    $products = get_posts([
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC',
+        'fields' => 'ids',
+        'no_found_rows' => true,
+        'tax_query' => [
+            [
+                'taxonomy' => 'product_category',
+                'field' => 'term_id',
+                'terms' => [$parent_term_id],
+                'include_children' => true,
+            ],
+        ],
+    ]);
+
+    if (empty($products) || !is_array($products)) {
+        return [];
+    }
+
+    return array_map('intval', $products);
+}
+
 function bcc_header_catalog_has_fallback_items(): bool {
     $terms = get_terms([
         'taxonomy' => 'product_category',
@@ -213,21 +243,16 @@ function bcc_render_header_catalog_fallback(): void {
         echo '<div class="header-catalog__content-item' . $is_active . '">';
         echo '<ul>';
 
-        $child_terms = get_terms([
-            'taxonomy' => 'product_category',
-            'hide_empty' => true,
-            'parent' => (int) $term->term_id,
-            'orderby' => 'name',
-            'order' => 'ASC',
-        ]);
+        $product_ids = bcc_get_products_for_parent_category((int) $term->term_id);
 
-        if (!empty($child_terms) && !is_wp_error($child_terms)) {
-            foreach ($child_terms as $child_term) {
-                $child_link = get_term_link($child_term);
-                if (is_wp_error($child_link)) {
+        if (!empty($product_ids)) {
+            foreach ($product_ids as $product_id) {
+                $link = get_permalink($product_id);
+                $title = get_the_title($product_id);
+                if (!$link || $title === '') {
                     continue;
                 }
-                echo '<li><a href="' . esc_url($child_link) . '">' . esc_html($child_term->name) . '</a></li>';
+                echo '<li><a href="' . esc_url($link) . '">' . esc_html($title) . '</a></li>';
             }
         } else {
             $parent_link = get_term_link($term);
@@ -397,13 +422,31 @@ function bcc_render_header_catalog_menu(): void {
         echo '<div class="header-catalog__content-item' . $is_active . '">';
         echo '<ul>';
 
-        $parent_id = (int) $parent->ID;
-        $children = $children_by_parent[$parent_id] ?? [];
-        if (!empty($children)) {
-            foreach ($children as $child) {
-                $child_title = isset($child->title) ? wp_strip_all_tags($child->title) : '';
-                $child_url = !empty($child->url) ? esc_url($child->url) : '#';
-                echo '<li><a href="' . $child_url . '">' . esc_html($child_title) . '</a></li>';
+        $is_product_category = (
+            !empty($parent->type) && $parent->type === 'taxonomy'
+            && !empty($parent->object) && $parent->object === 'product_category'
+            && !empty($parent->object_id)
+        );
+
+        if ($is_product_category) {
+            $product_ids = bcc_get_products_for_parent_category((int) $parent->object_id);
+            foreach ($product_ids as $product_id) {
+                $link = get_permalink($product_id);
+                $title = get_the_title($product_id);
+                if (!$link || $title === '') {
+                    continue;
+                }
+                echo '<li><a href="' . esc_url($link) . '">' . esc_html($title) . '</a></li>';
+            }
+        } else {
+            $parent_id = (int) $parent->ID;
+            $children = $children_by_parent[$parent_id] ?? [];
+            if (!empty($children)) {
+                foreach ($children as $child) {
+                    $child_title = isset($child->title) ? wp_strip_all_tags($child->title) : '';
+                    $child_url = !empty($child->url) ? esc_url($child->url) : '#';
+                    echo '<li><a href="' . $child_url . '">' . esc_html($child_title) . '</a></li>';
+                }
             }
         }
 
@@ -471,12 +514,27 @@ function bcc_render_mobile_catalog(): void {
                     $desc = isset($parent->description) ? wp_strip_all_tags($parent->description) : '';
                 }
 
-                $children = $children_by_parent[(int) $parent->ID] ?? [];
-                foreach ($children as $child) {
-                    $links[] = [
-                        'title' => isset($child->title) ? wp_strip_all_tags($child->title) : '',
-                        'url'   => !empty($child->url) ? $child->url : '#',
-                    ];
+                if ($is_product_category) {
+                    $product_ids = bcc_get_products_for_parent_category((int) $parent->object_id);
+                    foreach ($product_ids as $product_id) {
+                        $link = get_permalink($product_id);
+                        $title = get_the_title($product_id);
+                        if (!$link || $title === '') {
+                            continue;
+                        }
+                        $links[] = [
+                            'title' => $title,
+                            'url'   => $link,
+                        ];
+                    }
+                } else {
+                    $children = $children_by_parent[(int) $parent->ID] ?? [];
+                    foreach ($children as $child) {
+                        $links[] = [
+                            'title' => isset($child->title) ? wp_strip_all_tags($child->title) : '',
+                            'url'   => !empty($child->url) ? $child->url : '#',
+                        ];
+                    }
                 }
 
                 $items_data[] = [
@@ -503,23 +561,17 @@ function bcc_render_mobile_catalog(): void {
                 $count = (int) ($term->count ?? 0);
                 $links = [];
 
-                $child_terms = get_terms([
-                    'taxonomy' => 'product_category',
-                    'hide_empty' => true,
-                    'parent' => (int) $term->term_id,
-                    'orderby' => 'name',
-                    'order' => 'ASC',
-                ]);
-
-                if (!empty($child_terms) && !is_wp_error($child_terms)) {
-                    foreach ($child_terms as $child_term) {
-                        $child_link = get_term_link($child_term);
-                        if (is_wp_error($child_link)) {
+                $product_ids = bcc_get_products_for_parent_category((int) $term->term_id);
+                if (!empty($product_ids)) {
+                    foreach ($product_ids as $product_id) {
+                        $link = get_permalink($product_id);
+                        $title = get_the_title($product_id);
+                        if (!$link || $title === '') {
                             continue;
                         }
                         $links[] = [
-                            'title' => $child_term->name,
-                            'url'   => $child_link,
+                            'title' => $title,
+                            'url'   => $link,
                         ];
                     }
                 } else {
