@@ -9,7 +9,7 @@
         <?php if ( has_post_thumbnail() ) : ?>
             <div class="search-result-item__thumbnail">
                 <a href="<?php the_permalink(); ?>">
-                    <?php the_post_thumbnail( 'medium', array( 'alt' => get_the_title() ) ); ?>
+                    <?php the_post_thumbnail( 'large', array( 'alt' => get_the_title() ) ); ?>
                 </a>
             </div>
         <?php endif; ?>

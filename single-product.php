@@ -393,12 +393,12 @@ while (have_posts()) : the_post();
                         while ($related_products->have_posts()) : $related_products->the_post();
                             $related_gallery = function_exists('carbon_get_post_meta') ? carbon_get_post_meta(get_the_ID(), 'product_gallery') : get_post_meta(get_the_ID(), 'product_gallery', true);
                             ?>
-                            <div class="swiper-slide product-card">
+                            <a href="<?php the_permalink(); ?>" class="swiper-slide product-card">
                                 <?php if ($related_gallery && is_array($related_gallery) && !empty($related_gallery)) : ?>
                                     <div class="swiper product-card__swp">
                                         <div class="swiper-wrapper">
                                             <?php foreach (array_slice($related_gallery, 0, 3) as $image_id) :
-                                                $image = wp_get_attachment_image_url($image_id, 'medium');
+                                                $image = wp_get_attachment_image_url($image_id, 'large');
                                                 if ($image) : ?>
                                                     <div class="swiper-slide">
                                                         <img src="<?php echo esc_url($image); ?>" alt="<?php the_title(); ?>">
@@ -412,7 +412,7 @@ while (have_posts()) : the_post();
                                     <div class="swiper product-card__swp">
                                         <div class="swiper-wrapper">
                                             <div class="swiper-slide">
-                                                <?php the_post_thumbnail('medium'); ?>
+                                                <?php the_post_thumbnail('large'); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -430,9 +430,9 @@ while (have_posts()) : the_post();
                                         <h3><?php the_title(); ?></h3>
                                         <p><?php echo wp_trim_words(get_the_excerpt(), 15); ?></p>
                                     </div>
-                                    <a href="<?php the_permalink(); ?>">Подробнее</a>
+                                    <span>Подробнее</span>
                                 </div>
-                            </div>
+                            </a>
                         <?php endwhile;
                         wp_reset_postdata();
                         ?>

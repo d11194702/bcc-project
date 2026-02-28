@@ -135,12 +135,12 @@ $products_query = new WP_Query( $args );
                         $price = function_exists( 'carbon_get_post_meta' ) ? carbon_get_post_meta( get_the_ID(), 'product_price' ) : get_post_meta( get_the_ID(), 'product_price', true );
                         $gallery = function_exists( 'carbon_get_post_meta' ) ? carbon_get_post_meta( get_the_ID(), 'product_gallery' ) : get_post_meta( get_the_ID(), 'product_gallery', true );
                         ?>
-                        <div class="product-card">
+                        <a href="<?php the_permalink(); ?>" class="product-card">
                             <?php if ( $gallery && is_array( $gallery ) ) : ?>
                                 <div class="swiper product-card__swp">
                                     <div class="swiper-wrapper">
                                         <?php foreach ( $gallery as $image_id ) : ?>
-                                            <?php $image = wp_get_attachment_image_url( $image_id, 'medium' ); ?>
+                                            <?php $image = wp_get_attachment_image_url( $image_id, 'large' ); ?>
                                             <?php if ( $image ) : ?>
                                                 <div class="swiper-slide">
                                                     <img src="<?php echo esc_url( $image ); ?>" alt="<?php the_title_attribute(); ?>">
@@ -154,7 +154,7 @@ $products_query = new WP_Query( $args );
                                 <div class="swiper product-card__swp">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
-                                            <?php the_post_thumbnail( 'medium' ); ?>
+                                            <?php the_post_thumbnail( 'large' ); ?>
                                         </div>
                                     </div>
                                 </div>
@@ -176,9 +176,9 @@ $products_query = new WP_Query( $args );
                                 <?php if ( $price ) : ?>
                                     <div class="price"><?php echo esc_html( $price ); ?> руб/м2</div>
                                 <?php endif; ?>
-                                <a href="<?php the_permalink(); ?>">Подробнее</a>
+                                <span>Подробнее</span>
                             </div>
-                        </div>
+                        </a>
                     <?php endwhile; ?>
                 <?php else : ?>
                     <p>По вашему запросу товары не найдены.</p>

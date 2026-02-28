@@ -41,7 +41,7 @@ get_header(); ?>
                         </a>
                     </div>
                     <?php if ( ! empty( $image ) ) : ?>
-                        <?php echo wp_get_attachment_image( $image, 'medium', false, array( 'class' => 'main-img', 'data-fancybox' => 'guarantees' ) ); ?>
+                        <?php echo wp_get_attachment_image( $image, 'large', false, array( 'class' => 'main-img', 'data-fancybox' => 'guarantees' ) ); ?>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
@@ -68,7 +68,7 @@ get_header(); ?>
                         </a>
                     </div>
                     <?php if ( ! empty( $image ) ) : ?>
-                        <?php echo wp_get_attachment_image( $image, 'medium', false, array( 'class' => 'main-img', 'data-fancybox' => 'technical' ) ); ?>
+                        <?php echo wp_get_attachment_image( $image, 'large', false, array( 'class' => 'main-img', 'data-fancybox' => 'technical' ) ); ?>
                     <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
