@@ -159,15 +159,16 @@ function bcc_render_header_catalog_fallback(): void {
     // Если категорий нет, но товары есть — покажем 1 колонку "Все товары".
     if (!$parents) {
         $total = (int) wp_count_posts('product')->publish;
+        $all_products_url = get_products_archive_url();
         echo '<div class="header-catalog">';
         echo '<ul class="header-catalog__left">';
         echo '<li class="header-catalog__link active">';
-        echo '<div class="header-catalog__link-left">';
+        echo '<a href="' . esc_url($all_products_url) . '" class="header-catalog__link-left">';
         echo '<img src="' . esc_url($default_icon) . '" alt="" class="main-img">';
         echo '<div class="text">';
         echo '<h3>' . esc_html__('Все товары', 'bcc-project') . '</h3>';
         echo '<span>[' . esc_html((string) $total) . ' ' . esc_html(bcc_ru_pluralize($total, 'товар', 'товара', 'товаров')) . ']</span>';
-        echo '</div></div>';
+        echo '</div></a>';
         echo '<img src="' . esc_url($arrow_icon) . '" alt="" class="icon">';
         echo '</li>';
         echo '</ul>';
@@ -223,14 +224,16 @@ function bcc_render_header_catalog_fallback(): void {
         $is_active = $idx === $active_parent_index ? ' active' : '';
         $count = (int) ($term->count ?? 0);
         $img = bcc_get_product_category_menu_image_url((int) $term->term_id, $default_icon);
+        $parent_link = get_term_link($term);
+        $parent_url = is_wp_error($parent_link) ? '#' : $parent_link;
 
         echo '<li class="header-catalog__link' . $is_active . '">';
-        echo '<div class="header-catalog__link-left">';
+        echo '<a href="' . esc_url($parent_url) . '" class="header-catalog__link-left">';
         echo '<img src="' . esc_url($img) . '" alt="" class="main-img">';
         echo '<div class="text">';
         echo '<h3>' . esc_html($term->name) . '</h3>';
         echo '<span>[' . esc_html((string) $count) . ' ' . esc_html(bcc_ru_pluralize($count, 'товар', 'товара', 'товаров')) . ']</span>';
-        echo '</div></div>';
+        echo '</div></a>';
         echo '<img src="' . esc_url($arrow_icon) . '" alt="" class="icon">';
         echo '</li>';
     }
@@ -356,6 +359,7 @@ function bcc_render_header_catalog_menu(): void {
         $is_active = $index === $active_parent_index ? ' active' : '';
 
         $title = isset($parent->title) ? wp_strip_all_tags($parent->title) : '';
+        $parent_url = !empty($parent->url) ? $parent->url : '#';
 
         $image_url = '';
         $desc = '';
@@ -401,7 +405,7 @@ function bcc_render_header_catalog_menu(): void {
         }
 
         echo '<li class="header-catalog__link' . $is_active . '">';
-        echo '<div class="header-catalog__link-left">';
+        echo '<a href="' . esc_url($parent_url) . '" class="header-catalog__link-left">';
         echo '<img src="' . esc_url($image_url) . '" alt="" class="main-img">';
         echo '<div class="text">';
         echo '<h3>' . esc_html($title) . '</h3>';
@@ -409,7 +413,7 @@ function bcc_render_header_catalog_menu(): void {
             echo '<span>' . esc_html($desc) . '</span>';
         }
         echo '</div>';
-        echo '</div>';
+        echo '</a>';
         echo '<img src="' . esc_url($arrow_icon) . '" alt="" class="icon">';
         echo '</li>';
     }

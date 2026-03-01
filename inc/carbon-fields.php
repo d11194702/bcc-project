@@ -21,6 +21,21 @@ function crb_attach_theme_options()
                 ->set_help_text('Ключевые слова через запятую (например: металлочерепица, кровля, профлист)'),
         ));
 
+    // SEO ПОЛЯ: Для категорий товаров
+    Container::make('term_meta', __('SEO настройки категории'))
+        ->where('term_taxonomy', '=', 'product_category')
+        ->add_fields(array(
+            Field::make('text', 'seo_title', 'SEO Title')
+                ->set_help_text('Мета-заголовок для поисковиков (до 60 символов). Если не заполнено — используется название категории.')
+                ->set_attribute('maxLength', 60),
+            Field::make('textarea', 'seo_description', 'SEO Description')
+                ->set_help_text('Мета-описание для поисковиков (до 160 символов). Если не заполнено — используется описание категории.')
+                ->set_rows(3)
+                ->set_attribute('maxLength', 160),
+            Field::make('text', 'seo_keywords', 'Ключевые слова')
+                ->set_help_text('Ключевые слова через запятую (например: металлочерепица, кровля, профлист)'),
+        ));
+
     // ОПЦИИ ТЕМЫ: Контакты и Соц. сети
     $theme_options = Container::make('theme_options', __('Контакты'));
 

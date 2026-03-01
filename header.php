@@ -6,19 +6,23 @@
     <title><?php wp_title('|', true, 'right'); ?><?php bloginfo('name'); ?></title>
     <?php
     // SEO мета-теги из Carbon Fields
+    $seo_title = '';
+    $seo_description = '';
+    $seo_keywords = '';
+
     if (is_singular()) {
         $post_id = get_the_ID();
-        
+
         // Получаем SEO поля из Carbon Fields
         $seo_title = carbon_get_post_meta($post_id, 'seo_title');
         $seo_description = carbon_get_post_meta($post_id, 'seo_description');
         $seo_keywords = carbon_get_post_meta($post_id, 'seo_keywords');
-        
+
         // Fallback на обычный контент если SEO поля пустые
         if (empty($seo_title)) {
             $seo_title = get_the_title($post_id);
         }
-        
+
         if (empty($seo_description)) {
             $excerpt = get_the_excerpt($post_id);
             if (empty($excerpt)) {
@@ -31,17 +35,34 @@
                 $seo_description = $excerpt;
             }
         }
-        
-        // Выводим мета-теги
-        if (!empty($seo_title)) {
-            echo '<meta name="title" content="' . esc_attr($seo_title) . '">' . "\n    ";
+    } elseif (is_tax('product_category')) {
+        $term = get_queried_object();
+
+        if ($term && !is_wp_error($term) && !empty($term->term_id)) {
+            $term_id = (int) $term->term_id;
+            $seo_title = carbon_get_term_meta($term_id, 'seo_title');
+            $seo_description = carbon_get_term_meta($term_id, 'seo_description');
+            $seo_keywords = carbon_get_term_meta($term_id, 'seo_keywords');
+
+            if (empty($seo_title)) {
+                $seo_title = $term->name;
+            }
+
+            if (empty($seo_description) && !empty($term->description)) {
+                $seo_description = wp_strip_all_tags($term->description);
+            }
         }
-        if (!empty($seo_description)) {
-            echo '<meta name="description" content="' . esc_attr($seo_description) . '">' . "\n    ";
-        }
-        if (!empty($seo_keywords)) {
-            echo '<meta name="keywords" content="' . esc_attr($seo_keywords) . '">' . "\n    ";
-        }
+    }
+
+    // Выводим мета-теги
+    if (!empty($seo_title)) {
+        echo '<meta name="title" content="' . esc_attr($seo_title) . '">' . "\n    ";
+    }
+    if (!empty($seo_description)) {
+        echo '<meta name="description" content="' . esc_attr($seo_description) . '">' . "\n    ";
+    }
+    if (!empty($seo_keywords)) {
+        echo '<meta name="keywords" content="' . esc_attr($seo_keywords) . '">' . "\n    ";
     }
     ?>
     <?php wp_head(); ?>

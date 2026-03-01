@@ -105,19 +105,41 @@ while (have_posts()) : the_post();
                     <?php endif; ?>
                 </div>
                 <div class="product-block__text">
+                    <?php
+                    $normalized_thickness_prices = [];
+                    if (is_array($thickness_prices)) {
+                        foreach ($thickness_prices as $row) {
+                            if (!is_array($row)) {
+                                continue;
+                            }
+
+                            $thickness_label = isset($row['thickness']) ? trim((string) $row['thickness']) : '';
+                            $thickness_price = isset($row['price']) ? trim((string) $row['price']) : '';
+
+                            if ($thickness_label === '' || $thickness_price === '') {
+                                continue;
+                            }
+
+                            $normalized_thickness_prices[] = [
+                                'thickness' => $thickness_label,
+                                'price' => $thickness_price,
+                            ];
+                        }
+                    }
+
+                    $has_thickness_selector = !empty($normalized_thickness_prices);
+                    ?>
                     <div class="product-block__text-head">
                         <h3>Спецификация</h3>
-                        <?php if ($specifications && is_array($specifications)) : ?>
-                            <ul>
+                        <ul>
+                            <?php if ($specifications && is_array($specifications)) : ?>
                                 <?php foreach ($specifications as $spec) : ?>
                                     <li>
                                         <b><?php echo esc_html($spec['label']); ?></b>
                                         <span><?php echo esc_html($spec['spec_value']); ?></span>
                                     </li>
                                 <?php endforeach; ?>
-                            </ul>
-                        <?php else : ?>
-                            <ul>
+                            <?php else : ?>
                                 <li>
                                     <b>Полезная ширина листа, мм</b>
                                     <span>1110</span>
@@ -134,62 +156,43 @@ while (have_posts()) : the_post();
                                     <b>Высота волны, мм</b>
                                     <span>25</span>
                                 </li>
-                            </ul>
-                        <?php endif; ?>
+                            <?php endif; ?>
+
+                            <?php if ($has_thickness_selector) : ?>
+                                <li class="product-spec-thickness-row">
+                                    <b>Толщина металла, мм</b>
+                                    <div class="main-select product-thickness-select">
+                                        <button class="main-select__btn" type="button">
+                                            <span><?php echo esc_html($normalized_thickness_prices[0]['thickness']); ?></span>
+                                            <input type="hidden" name="product_thickness" value="<?php echo esc_attr($normalized_thickness_prices[0]['thickness']); ?>">
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                                                <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        <div class="main-select__list">
+                                            <?php foreach ($normalized_thickness_prices as $index => $item) : ?>
+                                                <button
+                                                    type="button"
+                                                    data-thickness="<?php echo esc_attr($item['thickness']); ?>"
+                                                    data-price="<?php echo esc_attr($item['price']); ?>"
+                                                    <?php echo $index === 0 ? 'class="selected"' : ''; ?>
+                                                >
+                                                    <span><?php echo esc_html($item['thickness']); ?></span>
+                                                </button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </li>
+                            <?php endif; ?>
+                        </ul>
                     </div>
                     <div class="product-block__text-bottom">
                         <?php
-                        $normalized_thickness_prices = [];
-                        if (is_array($thickness_prices)) {
-                            foreach ($thickness_prices as $row) {
-                                if (!is_array($row)) {
-                                    continue;
-                                }
-
-                                $thickness_label = isset($row['thickness']) ? trim((string) $row['thickness']) : '';
-                                $thickness_price = isset($row['price']) ? trim((string) $row['price']) : '';
-
-                                if ($thickness_label === '' || $thickness_price === '') {
-                                    continue;
-                                }
-
-                                $normalized_thickness_prices[] = [
-                                    'thickness' => $thickness_label,
-                                    'price' => $thickness_price,
-                                ];
-                            }
-                        }
-
-                        $has_thickness_selector = !empty($normalized_thickness_prices);
                         $display_price = trim((string) $price);
                         if ($display_price === '' && $has_thickness_selector) {
                             $display_price = $normalized_thickness_prices[0]['price'];
                         }
                         ?>
-
-                        <?php if ($has_thickness_selector) : ?>
-                            <div class="main-select product-thickness-select">
-                                <button class="main-select__btn" type="button">
-                                    <span><?php echo esc_html($normalized_thickness_prices[0]['thickness']); ?></span>
-                                    <input type="hidden" name="product_thickness" value="<?php echo esc_attr($normalized_thickness_prices[0]['thickness']); ?>">
-                                    <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-                                        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </svg>
-                                </button>
-                                <div class="main-select__list">
-                                    <?php foreach ($normalized_thickness_prices as $index => $item) : ?>
-                                        <button
-                                            type="button"
-                                            data-thickness="<?php echo esc_attr($item['thickness']); ?>"
-                                            data-price="<?php echo esc_attr($item['price']); ?>"
-                                            <?php echo $index === 0 ? 'class="selected"' : ''; ?>
-                                        >
-                                            <span><?php echo esc_html($item['thickness']); ?></span>
-                                        </button>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
 
                         <?php if ($display_price !== '') : ?>
                             <div class="price">

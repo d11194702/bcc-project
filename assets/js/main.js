@@ -121,23 +121,37 @@ if (headerCatalog) {
         headerCatalog.classList.toggle('active');
     }
 
+    const setActiveHeaderCatalogItem = (activeIndex) => {
+        headerCatalogContents.forEach((el, elID) => {
+            if (activeIndex == elID) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        })
+
+        headerCatalogBtns.forEach((el, elID) => {
+            if (activeIndex == elID) {
+                el.classList.add('active');
+            } else {
+                el.classList.remove('active');
+            }
+        })
+    }
+
     headerCatalogBtns.forEach((btn, btnID) => {
+        btn.addEventListener('mouseenter', () => {
+            if (window.innerWidth > 992) {
+                setActiveHeaderCatalogItem(btnID);
+            }
+        });
+
         btn.onclick = e => {
+            if (e.target.closest('.header-catalog__link-left')) {
+                return;
+            }
             e.preventDefault();
-            headerCatalogContents.forEach((el, elID) => {
-                if (btnID == elID) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            })
-            headerCatalogBtns.forEach((el, elID) => {
-                if (btnID == elID) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            })
+            setActiveHeaderCatalogItem(btnID);
         }
     })
 }

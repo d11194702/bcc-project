@@ -142,17 +142,23 @@ $image_mobile  = carbon_get_post_meta( get_the_ID(), 'home_hero_image_mobile' );
                                             $image = wp_get_attachment_image_url( get_post_thumbnail_id( $product->ID ), 'full' );
                                             // Получаем описание из кастомного поля
                                             $head_text = carbon_get_post_meta( $product->ID, 'product_head_text' );
+                                            $card_text_source = $head_text ? $head_text : $product->post_content;
+                                            $card_text = wp_trim_words( wp_strip_all_tags( (string) $card_text_source ), 20, '...' );
+                                            $product_permalink = get_permalink( $product->ID );
+                                            if ( ! $product_permalink ) {
+                                                continue;
+                                            }
                                         ?>
-                                            <div class="swiper-slide product-catalog__card">
+                                            <a href="<?php echo esc_url( $product_permalink ); ?>" class="swiper-slide product-catalog__card">
                                                 <?php if ( $image ) : ?>
                                                     <img src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( $product->post_title ); ?>" class="main-img">
                                                 <?php endif; ?>
                                                 <div class="product-catalog__card-body">
                                                     <h3><?php echo esc_html( $product->post_title ); ?></h3>
-                                                    <p><?php echo wp_kses_post( $head_text ?: wp_trim_words( $product->post_content, 20 ) ); ?></p>
-                                                    <a href="<?php echo esc_url( get_permalink( $product->ID ) ); ?>" class="more-link__text">Подробнее</a>
+                                                    <p><?php echo esc_html( $card_text ); ?></p>
+                                                    <span class="more-link__text">Подробнее</span>
                                                 </div>
-                                            </div>
+                                            </a>
                                         <?php endforeach; ?>
                                     </div>
                                     <button class="swp-prev">
