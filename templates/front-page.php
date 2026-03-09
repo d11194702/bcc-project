@@ -140,6 +140,14 @@ $image_mobile  = carbon_get_post_meta( get_the_ID(), 'home_hero_image_mobile' );
                                         <?php foreach ( $products as $product ) : 
                                             // Получаем изображение товара
                                             $image = wp_get_attachment_image_url( get_post_thumbnail_id( $product->ID ), 'full' );
+                                            if ( ! $image ) {
+                                                // Если нет миниатюры, берем первое изображение из галереи
+                                                $gallery = carbon_get_post_meta( $product->ID, 'product_gallery' );
+                                                if ( $gallery && is_array( $gallery ) && ! empty( $gallery ) ) {
+                                                    $first_image_id = $gallery[0];
+                                                    $image = wp_get_attachment_image_url( $first_image_id, 'full' );
+                                                }
+                                            }
                                             // Получаем описание из кастомного поля
                                             $head_text = carbon_get_post_meta( $product->ID, 'product_head_text' );
                                             $card_text_source = $head_text ? $head_text : $product->post_content;
