@@ -310,7 +310,8 @@ main {
   position: relative;
 }
 .main-select__btn {
-  width: 130px;
+  width: -moz-fit-content;
+  width: fit-content;
   height: 40px;
   display: flex;
   align-items: center;
@@ -352,7 +353,8 @@ main {
   border-radius: 10px;
   position: absolute;
   z-index: 2;
-  width: 130px;
+  width: -moz-fit-content;
+  width: fit-content;
   bottom: -5px;
   transform: translateY(100%);
 }
